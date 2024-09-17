@@ -1,0 +1,9 @@
+spec:
+  template:
+    spec:
+      containers:
+        - name: nginx-ingress-controller
+          args:
+            - /nginx-ingress-controller
+            - --configmap=$(POD_NAMESPACE)/nginx-configuration
+            - --tcp-services-configmap=$(POD_NAMESPACE)/tcp-services

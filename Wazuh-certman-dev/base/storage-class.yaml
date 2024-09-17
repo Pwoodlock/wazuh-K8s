@@ -1,0 +1,27 @@
+# Copyright (C) 2019, Wazuh Inc.
+#
+# This program is a free software; you can redistribute it
+# and/or modify it under the terms of the GNU General Public
+# License (version 2) as published by the FSF - Free Software
+# Foundation.
+
+# Wazuh StorageClass
+
+#apiVersion: storage.k8s.io/v1
+#kind: StorageClass
+#metadata:
+#  name: wazuh-storage
+#provisioner: driver.longhorn.io
+
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: wazuh-storage
+provisioner: driver.longhorn.io
+reclaimPolicy: Delete  # Or use 'Retain' if you want to keep the PV after PVC is deleted
+allowVolumeExpansion: true  # Allows you to resize the volume after creation if needed
+parameters:
+  numberOfReplicas: "3"  # Ensures data is replicated across 3 nodes for redundancy
+  staleReplicaTimeout: "30"  # The time in minutes to wait before a replica can be safely removed after disconnection
+volumeBindingMode: Immediate  # Or use 'WaitForFirstConsumer' to delay binding until a pod requests the PVC

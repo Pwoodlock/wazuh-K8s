@@ -1,0 +1,111 @@
+---
+# Dashboard and Wazuh app Web GUI.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wazuh-dashboard-ingress
+  namespace: wazuh
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS" # Ensure communication with backend over HTTPS
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "letsencrypt-cloudflare"
+spec:
+  tls:
+    - hosts:
+        - wazuh.siem.devsec.ie
+      secretName: wazuh-tls
+  rules:
+    - host: "wazuh.siem.devsec.ie"
+      http:
+        paths:
+          # Wazuh dashboard
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 5601
+---
+# Wazuh  API
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wazuh-api-ingress
+  namespace: wazuh
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS" # Ensure communication with backend over HTTPS
+    cert-manager.io/cluster-issuer: "letsencrypt-cloudfalre"
+spec:
+  tls:
+    - hosts:
+        - wazuh-api.siem.devsec.ie
+      secretName: wazuh-api-tls
+  rules:
+    - host: "wazuh-api.siem.devsec.ie"
+      http:
+        paths:
+          # Wazuh REST API
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: wazuh
+                port:
+                  number: 55000
+---
+# Wazuh agent authd registration service.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wazuh-agent-authd-ingress
+  namespace: wazuh
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS" # Ensure communication with backend over HTTPS
+    cert-manager.io/cluster-issuer: "letsencrypt-cloudflare"
+spec:
+  tls:
+    - hosts:
+        - wazuh-master.siem.devsec.ie
+      secretName: wazuh-master-tls
+  rules:
+    - host: "wazuh-master.siem.devsec.ie"
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: wazuh
+                port:
+                  number: 1515
+---
+# Wazuh Reporting service
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wazuh-reporting-ingress
+  namespace: wazuh
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-cloudflare"
+spec:
+  tls:
+    - hosts:
+        - wazuh-manager.siem.devsec.ie
+      secretName: wazuh-manager-tls
+  rules:
+    - host: "wazuh-manager.siem.devsec.ie"
+      http:
+        paths:
+          # Wazuh Reporting service
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: wazuh-workers
+                port:
+                  number: 1514

@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wazuh-external-tls
+  namespace: wazuh
+spec:
+  secretName: wazuh-external-tls
+  issuerRef:
+    name: letsencrypt-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+    - devsec.ie
+    - "*.devsec.ie" # Include wildcard domain

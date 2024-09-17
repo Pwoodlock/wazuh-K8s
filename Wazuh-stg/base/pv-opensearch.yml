@@ -1,0 +1,16 @@
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: pvc-opensearch
+#   labels:
+#     app: opensearch
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 5Gi
+#   storageClassName: longhorn
+
+# Keeping these here for testing purposes given that I can use these for ephemeral storage for testing.
+# If Enabling these, make sure to remove the Storage Template Claims!!!!!

@@ -1,0 +1,32 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: wazuh-manager-ingress
+  namespace: wazuh
+spec:
+  entryPoints:
+    - wazuh-enrol
+  routes:
+  - match: HostSNI(`*`)
+    services:
+    - name: wazuh-manager
+      port: 1515
+  tls:
+    passthrough: true
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: wazuh-worker-ingress
+  namespace: wazuh
+spec:
+  entryPoints:
+    - wazuh-agent
+  routes:
+  - match: HostSNI(`*`)
+    services:
+    - name: wazuh-worker
+      port: 1514
+  tls:
+    passthrough: true

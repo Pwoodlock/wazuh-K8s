@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcp-services
+  namespace: nginx
+data:
+  1514: "wazuh/wazuh-workers:1514"
+  1515: "wazuh/wazuh:1515"
